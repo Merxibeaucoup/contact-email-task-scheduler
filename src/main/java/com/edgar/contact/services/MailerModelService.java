@@ -25,14 +25,14 @@ public class MailerModelService {
 	
 	
 	@Autowired
-	private MailerModelRepository mailerModelRepository; //declare MailerModelRepository
+	private MailerModelRepository mailerModelRepository; 
 	
 	
 	@Autowired
-	private JavaMailSender mailSender; //declare javaMailsender
+	private JavaMailSender mailSender; 
 	
 	@Autowired
-	private ContactRepository contactRepository; //declare contactRepository to use .findAll() to get all contacts
+	private ContactRepository contactRepository; 
 	
 	
 	// This method loops through all the contacts and finds if there is a birthday today
@@ -40,27 +40,27 @@ public class MailerModelService {
 	public void checkforBirthday() {
 		List<Contact> filter_Contacts = contactRepository.findAll()
 				.stream()
-				.filter(c -> c.getBirthday() != null  //if birthday of contact not null
-				&& c.getBirthday().getDayOfMonth()== LocalDate.now().getDayOfMonth() // compare if day == localdate day
-				&& c.getBirthday().getMonth().getValue() == LocalDate.now().getMonth().getValue()) // compare if month === localdate month
-				.collect(Collectors.toList()); // make a list of those contacts 
+				.filter(c -> c.getBirthday() != null 
+				&& c.getBirthday().getDayOfMonth()== LocalDate.now().getDayOfMonth() 
+				&& c.getBirthday().getMonth().getValue() == LocalDate.now().getMonth().getValue())
+				.collect(Collectors.toList());
 		
 		if(filter_Contacts.size() > 0) // if there is indeed such contact
 		{
 			filter_Contacts.stream()
 			.forEach(e ->{
 				
-				MailerModel mailerModel = new MailerModel(); // mailerModel obj
+				MailerModel mailerModel = new MailerModel();
 				
 				mailerModel.setEmailFrom("eddiebrrrt@gmail.com"); //mail from me
-				mailerModel.setEmailTo(e.getEmail()); // mail to e
+				mailerModel.setEmailTo(e.getEmail()); // mail to e			
 				
 				mailerModel.setSubject("Happy Birthday :)"); // subject
 				
                 mailerModel.setMessage("\uD83E\uDD73\uD83E\uDD73\uD83E\uDD73\uD83E\uDD73\uD83E\uDD73 Happy" + (LocalDate.now().getYear() - e.getBirthday().getYear())+" Birthday "+ e.getFirstname()
                 +"  \uD83C\uDF89\uD83C\uDF89\uD83C\uDF89\uD83C\uDF89 ," +" Have a wonderful day on this special day ;)"); //message
 
-				sendEmail(mailerModel); // invoke sendEmail method
+				sendEmail(mailerModel);
 				
 				
 			});
@@ -74,13 +74,16 @@ public class MailerModelService {
 		// message time
 		mailerModel.setSentDateTime(LocalDateTime.now()); 
 		
+		
 		try {
-			SimpleMailMessage message = new SimpleMailMessage(); // use simplemailmessage to compile message
+			SimpleMailMessage message = new SimpleMailMessage(); 
+			
+			
 			message.setFrom(mailerModel.getEmailFrom());
 			message.setTo(mailerModel.getEmailTo());
 			message.setSubject(mailerModel.getSubject());
 			message.setText(mailerModel.getMessage());
-			mailSender.send(message); // send the given simple massage 
+			mailSender.send(message); 
 			
 			mailerModel.setStatus(StatusEmail.SENT); // if successful
 		} catch( MailException e) {

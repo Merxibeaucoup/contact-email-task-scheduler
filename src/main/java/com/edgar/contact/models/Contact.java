@@ -35,31 +35,20 @@ public class Contact {
 	@Column(nullable = true)
 	private Date date;
 	
-	
-	
-	
 	@Column(nullable = true)
 	private String avatarFileName;
 	
 	@Column(nullable = false)
-	private String firstname; // contact firstname
+	private String firstname; 
 	
 	@Column(nullable = true)
-	private String lastname; // contact lastname
+	private String lastname; 
 	
-	
-	
-	/*
-	 * One contact can have multiple(Many) numbers 
-	 */
-	
-	
-	@OneToMany( cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER) 
+	@OneToMany( cascade = CascadeType.ALL, fetch = FetchType.EAGER) 
 	private Set<Phone> phoneNumbers; 
 	
-	
-	@Column
-	private String email; 
+	@Column(nullable = false)
+    private String email;
 	
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	@Column(nullable = false)
