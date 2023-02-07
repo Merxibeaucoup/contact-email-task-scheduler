@@ -1,53 +1,71 @@
 package com.edgar.contact.models.user;
 
-import java.util.Objects;
+
+
+import java.util.Collection;
+import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import lombok.Builder;
 
 @Entity
 @Table(name = "contact_users",
 uniqueConstraints = {
-        @UniqueConstraint(columnNames = "name"),
+       
         @UniqueConstraint(columnNames = "email")
 })
-public class User {
+@Builder
+public class User implements UserDetails {
 	
+	private static final long serialVersionUID = 1L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@NotBlank
-	@Size(max = 20)
-	private String username;
+	private String firstname;
 
-	@NotBlank
-	@Size(max = 50)
-	@Email
+	private String lastname;
+
 	private String email;
 
-	@NotBlank
-	@Size(max = 120)
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private String password;
-	
-	
-	
+
+	@Enumerated(EnumType.STRING)
+	private Role role;
 
 	public User() {
-	}
 
-	public User(String username, String email, String password) {
-		this.username = username;
+	}
+	
+	
+
+	public User(Long id, String firstname, String lastname, String email, String password, Role role) {
+		super();
+		this.id = id;
+		this.firstname = firstname;
+		this.lastname = lastname;
 		this.email = email;
 		this.password = password;
+		this.role = role;
 	}
+
+
 
 	public Long getId() {
 		return id;
@@ -57,12 +75,20 @@ public class User {
 		this.id = id;
 	}
 
-	public String getUsername() {
-		return username;
+	public String getFirstname() {
+		return firstname;
 	}
 
-	public void setUsername(String username) {
-		this.username = username;
+	public void setFirstname(String firstname) {
+		this.firstname = firstname;
+	}
+
+	public String getLastname() {
+		return lastname;
+	}
+
+	public void setLastname(String lastname) {
+		this.lastname = lastname;
 	}
 
 	public String getEmail() {
@@ -73,6 +99,7 @@ public class User {
 		this.email = email;
 	}
 
+	@Override
 	public String getPassword() {
 		return password;
 	}
@@ -80,28 +107,45 @@ public class User {
 	public void setPassword(String password) {
 		this.password = password;
 	}
+	
+	
+	
+	
+
+	/* user details methods to override */
+
+	
 
 	@Override
-	public String toString() {
-		return "User [id=" + id + ", username=" + username + ", email=" + email + ", password=" + password + "]";
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return List.of(new SimpleGrantedAuthority(role.name()));
 	}
 
 	@Override
-	public int hashCode() {
-		return Objects.hash(email, id, password, username);
+	public String getUsername() {
+		return email;
+	}
+	
+	/* Set Everything to true  else we can't access it */
+
+	@Override
+	public boolean isAccountNonExpired() {
+		return true;
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		User other = (User) obj;
-		return Objects.equals(email, other.email) && Objects.equals(id, other.id)
-				&& Objects.equals(password, other.password) && Objects.equals(username, other.username);
+	public boolean isAccountNonLocked() {
+		return true;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return true;
 	}
 
 	

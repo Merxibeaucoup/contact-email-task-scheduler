@@ -3,18 +3,15 @@ package com.edgar.contact.models;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.Objects;
-import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.Pattern;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -44,8 +41,16 @@ public class Contact {
 	@Column(nullable = true)
 	private String lastname; 
 	
-	@OneToMany( cascade = CascadeType.ALL, fetch = FetchType.EAGER) 
-	private Set<Phone> phoneNumbers; 
+	/*
+	 * ^ - Start of the string
+	 * [0-9] - Any digit between 0 to 9
+	 * {10} - 10 times
+	 * $ - End of the string
+	 */
+	
+	@Column(nullable = false)
+	@Pattern(regexp = "^[0-9]{10}$", message = "Invalid phone format,number should be a 10 digit number")
+	private String number; // number of phone
 	
 	@Column(nullable = false)
     private String email;
@@ -61,19 +66,19 @@ public class Contact {
 
 
 	public Contact(Long id, Date date, String avatarFileName, String firstname, String lastname,
-			Set<Phone> phoneNumbers, String emails, LocalDate birthday) {
+			@Pattern(regexp = "^[0-9]{10}$", message = "Invalid phone format,number should be a 10 digit number") String number,
+			String email, LocalDate birthday) {
 		super();
 		this.id = id;
 		this.date = date;
 		this.avatarFileName = avatarFileName;
 		this.firstname = firstname;
 		this.lastname = lastname;
-		this.phoneNumbers = phoneNumbers;
-		this.email = emails;
+		this.number = number;
+		this.email = email;
 		this.birthday = birthday;
 	}
-	
-	
+
 
 	public Long getId() {
 		return id;
@@ -125,26 +130,22 @@ public class Contact {
 	}
 
 
-	public Set<Phone> getPhoneNumbers() {
-		return phoneNumbers;
+	public String getNumber() {
+		return number;
 	}
-	
-    
 
 
-	public void setPhoneNumbers(Set<Phone> phoneNumbers) {
-		this.phoneNumbers = phoneNumbers;
-		
-		
+	public void setNumber(String number) {
+		this.number = number;
 	}
 
 
 	public String getEmail() {
-		return getEmail();
+		return email;
 	}
 
 
-	public void setEmails(String email) {
+	public void setEmail(String email) {
 		this.email = email;
 	}
 
@@ -162,14 +163,14 @@ public class Contact {
 	@Override
 	public String toString() {
 		return "Contact [id=" + id + ", date=" + date + ", avatarFileName=" + avatarFileName + ", firstname="
-				+ firstname + ", lastname=" + lastname + ", phoneNumbers=" + phoneNumbers + ", emails=" + email
-				+ ", birthday=" + birthday + "]";
+				+ firstname + ", lastname=" + lastname + ", number=" + number + ", email=" + email + ", birthday="
+				+ birthday + "]";
 	}
 
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(avatarFileName, birthday, date, email, firstname, id, lastname, phoneNumbers);
+		return Objects.hash(avatarFileName, birthday, date, email, firstname, id, lastname, number);
 	}
 
 
@@ -185,9 +186,10 @@ public class Contact {
 		return Objects.equals(avatarFileName, other.avatarFileName) && Objects.equals(birthday, other.birthday)
 				&& Objects.equals(date, other.date) && Objects.equals(email, other.email)
 				&& Objects.equals(firstname, other.firstname) && Objects.equals(id, other.id)
-				&& Objects.equals(lastname, other.lastname) && Objects.equals(phoneNumbers, other.phoneNumbers);
+				&& Objects.equals(lastname, other.lastname) && Objects.equals(number, other.number);
 	}
-	
+
+
 	
 	
 	
