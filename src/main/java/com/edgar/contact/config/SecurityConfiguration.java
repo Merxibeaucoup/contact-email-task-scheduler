@@ -31,21 +31,21 @@ public class SecurityConfiguration {
 		
 		
 		http
-		.csrf()
-		.disable()
-		.authorizeHttpRequests()
-		.antMatchers("/**").permitAll()
-		
-		
-		.anyRequest()
-		.authenticated()
+			.cors()
 		.and()
-		.sessionManagement()
-		.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+			.csrf()
+			.disable()	
+			.authorizeRequests()
+			.antMatchers("/api/v1/auth/**").permitAll()		
+			.anyRequest()
+			.authenticated()
 		.and()
-		.authenticationProvider(authenticationProvider)
-		.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
-	
+			.sessionManagement()
+			.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+		.and()
+			.authenticationProvider(authenticationProvider)
+			.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+		
 	
 	
 	return http.build();

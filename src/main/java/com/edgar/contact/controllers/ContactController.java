@@ -22,7 +22,7 @@ import com.edgar.contact.services.ContactService;
 
 @RestController
 @CrossOrigin(origins = "*")
-@RequestMapping("/api/contact")
+@RequestMapping("/api/v1/contact")
 public class ContactController {
 	
 
@@ -32,6 +32,15 @@ public class ContactController {
 
 	@Autowired
 	private ContactRepository contactRepository;
+	
+	
+	/*
+	 * This a test 
+	 */
+	@GetMapping("/test")
+	public ResponseEntity<String> sayHello(){
+		return ResponseEntity.ok("Helloo from the secured endpoint");
+	}
 	
 	
 	
