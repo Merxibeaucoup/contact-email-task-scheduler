@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.edgar.contact.exceptions.ContactDoesNotExistException;
 import com.edgar.contact.models.Contact;
 import com.edgar.contact.repositories.ContactRepository;
 
@@ -14,6 +15,13 @@ public class ContactService {
 	//declare  contact repository 
 	@Autowired
 	private ContactRepository repo;
+	
+	
+	
+	/* find by email **/
+	public Contact getContactByEmail(String email) {
+		return repo.findByEmail(email).orElseThrow(()-> new ContactDoesNotExistException("Contact not found with email :" + email));
+		}
 	
 	
 	
@@ -30,7 +38,16 @@ public class ContactService {
 	
 	//get one by id 
 	public Contact getOneById(long id) {
-		return repo.findById(id).get();
+		
+		Contact contact = repo.findById(id).get();
+		
+		if(contact !=null) {
+			return contact;
+		}
+		else {
+			throw new ContactDoesNotExistException("user not found with id : "+id);
+		}
+		
 	}
 	
 	//update one by id 

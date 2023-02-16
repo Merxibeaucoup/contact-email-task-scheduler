@@ -14,8 +14,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.edgar.contact.exceptions.ContactDoesNotExistException;
 import com.edgar.contact.models.Contact;
 import com.edgar.contact.repositories.ContactRepository;
 import com.edgar.contact.services.ContactService;
@@ -59,8 +61,14 @@ public class ContactController {
 	
 	// get one by id 
 	@GetMapping("/{id}")
-	public ResponseEntity<Contact> getOneContact(@PathVariable long id ){
+	public ResponseEntity<Contact> getOneContactById(@PathVariable long id )throws ContactDoesNotExistException{
 		return ResponseEntity.ok(contactService.getOneById(id));
+	}
+	
+	
+	@GetMapping("/email")
+	public ResponseEntity<Contact>  getOneContactByEmail(@RequestParam String email) throws ContactDoesNotExistException{
+		return  ResponseEntity.ok(contactService.getContactByEmail(email));
 	}
 	
 	
@@ -70,6 +78,8 @@ public class ContactController {
 		return ResponseEntity.ok(contactService.updateOneById(id, contact));
 		
 	}
+	
+
 	
 	
 	//delete one by id 
