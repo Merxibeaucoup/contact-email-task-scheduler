@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.edgar.contact.exceptions.ContactAlreadyExistException;
 import com.edgar.contact.exceptions.ContactDoesNotExistException;
 import com.edgar.contact.models.Contact;
 import com.edgar.contact.repositories.ContactRepository;
@@ -48,7 +49,7 @@ public class ContactController {
 	
 	//create 
 	@PostMapping("/new")
-	public ResponseEntity<Contact> create( @Valid @RequestBody Contact contact){
+	public ResponseEntity<Contact> create( @Valid @RequestBody Contact contact) {
 		Contact newContact = contactService.addNew(contact);
 		return ResponseEntity.ok(newContact);
 	}
@@ -61,13 +62,13 @@ public class ContactController {
 	
 	// get one by id 
 	@GetMapping("/{id}")
-	public ResponseEntity<Contact> getOneContactById(@PathVariable long id )throws ContactDoesNotExistException{
+	public ResponseEntity<Contact> getOneContactById(@PathVariable long id ){
 		return ResponseEntity.ok(contactService.getOneById(id));
 	}
 	
 	
 	@GetMapping("/email")
-	public ResponseEntity<Contact>  getOneContactByEmail(@RequestParam String email) throws ContactDoesNotExistException{
+	public ResponseEntity<Contact>  getOneContactByEmail(@RequestParam String email) {
 		return  ResponseEntity.ok(contactService.getContactByEmail(email));
 	}
 	
@@ -84,7 +85,7 @@ public class ContactController {
 	
 	//delete one by id 
 	@DeleteMapping("/{id}")
-	public ResponseEntity<?> deleteOneContact(@PathVariable long id){
+	public ResponseEntity<?> deleteOneContact(@PathVariable long id) {
 		return contactRepository.findById(id)
 		           .map(record -> {
 		               contactRepository.deleteById(id);

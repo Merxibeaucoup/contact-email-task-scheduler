@@ -11,5 +11,8 @@ import com.edgar.contact.models.Contact;
 public interface ContactRepository extends JpaRepository<Contact, Long> {
 	
 	Optional<Contact> findByEmail(String email);
+	
+	Boolean existsByEmail(String email);
+
 
 }
