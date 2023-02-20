@@ -2,13 +2,13 @@ package com.edgar.contact.models;
 
 import java.time.LocalDate;
 import java.util.Date;
-import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.Pattern;
@@ -16,6 +16,7 @@ import javax.validation.constraints.Pattern;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.edgar.contact.models.user.User;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
@@ -60,6 +61,10 @@ public class Contact {
 	private LocalDate birthday;
 	
 	
+	/*  created contact belongs to a user **/
+	@ManyToOne private User contact_user;
+	
+	
 	public Contact () {
 		
 	}
@@ -67,7 +72,7 @@ public class Contact {
 
 	public Contact(Long id, Date date, String avatarFileName, String firstname, String lastname,
 			@Pattern(regexp = "^[0-9]{10}$", message = "Invalid phone format,number should be a 10 digit number") String number,
-			String email, LocalDate birthday) {
+			String email, LocalDate birthday, User contact_user) {
 		super();
 		this.id = id;
 		this.date = date;
@@ -77,6 +82,7 @@ public class Contact {
 		this.number = number;
 		this.email = email;
 		this.birthday = birthday;
+		this.contact_user = contact_user;
 	}
 
 
@@ -160,37 +166,22 @@ public class Contact {
 	}
 
 
+	public User getContact_user() {
+		return contact_user;
+	}
+
+
+	public void setContact_user(User contact_user) {
+		this.contact_user = contact_user;
+	}
+
+
 	@Override
 	public String toString() {
 		return "Contact [id=" + id + ", date=" + date + ", avatarFileName=" + avatarFileName + ", firstname="
 				+ firstname + ", lastname=" + lastname + ", number=" + number + ", email=" + email + ", birthday="
-				+ birthday + "]";
+				+ birthday + ", contact_user=" + contact_user + "]";
 	}
-
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(avatarFileName, birthday, date, email, firstname, id, lastname, number);
-	}
-
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Contact other = (Contact) obj;
-		return Objects.equals(avatarFileName, other.avatarFileName) && Objects.equals(birthday, other.birthday)
-				&& Objects.equals(date, other.date) && Objects.equals(email, other.email)
-				&& Objects.equals(firstname, other.firstname) && Objects.equals(id, other.id)
-				&& Objects.equals(lastname, other.lastname) && Objects.equals(number, other.number);
-	}
-
-
-	
 	
 	
 

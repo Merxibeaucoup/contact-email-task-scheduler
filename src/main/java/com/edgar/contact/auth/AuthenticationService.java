@@ -7,6 +7,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.edgar.contact.config.JwtService;
+import com.edgar.contact.exceptions.ContactDoesNotExistException;
+
 import com.edgar.contact.models.user.Role;
 import com.edgar.contact.models.user.User;
 import com.edgar.contact.repositories.UserRepository;
@@ -65,5 +67,9 @@ public class AuthenticationService {
 		
 		
 	}
+	
+	public User getUserByEmail(String email) {
+		return repository.findByEmail(email).orElseThrow(()-> new ContactDoesNotExistException("Contact not found with email :" + email));
+		}
 
 }

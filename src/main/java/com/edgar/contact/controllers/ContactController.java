@@ -6,6 +6,8 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,9 +19,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.edgar.contact.exceptions.ContactAlreadyExistException;
-import com.edgar.contact.exceptions.ContactDoesNotExistException;
+import com.edgar.contact.auth.AuthenticationService;
 import com.edgar.contact.models.Contact;
+import com.edgar.contact.models.user.User;
 import com.edgar.contact.repositories.ContactRepository;
 import com.edgar.contact.services.ContactService;
 
@@ -31,6 +33,11 @@ public class ContactController {
 
 	@Autowired
 	private ContactService contactService;
+	
+	@Autowired
+	private AuthenticationService auServ;
+	
+	
 	
 
 	@Autowired
@@ -49,14 +56,16 @@ public class ContactController {
 	
 	//create 
 	@PostMapping("/new")
-	public ResponseEntity<Contact> create( @Valid @RequestBody Contact contact) {
-		Contact newContact = contactService.addNew(contact);
+	public ResponseEntity<Contact> create( Authentication authentication,@Valid @RequestBody Contact contact) {
+		User loggedInUser = auServ.getUserByEmail(authentication.getName());
+		Contact newContact = contactService.addNew(contact,loggedInUser);
 		return ResponseEntity.ok(newContact);
 	}
 	
 	//get all
-	@GetMapping
-	public ResponseEntity<List<Contact>> getAllContacts(){
+	@GetMapping("/all")
+	public ResponseEntity<List<Contact>> getAllContacts(@AuthenticationPrincipal User user ){
+		user.setId(user.getId());		
 		return ResponseEntity.ok(contactService.getAll());
 	}
 	

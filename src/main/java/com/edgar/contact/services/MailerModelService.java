@@ -35,7 +35,7 @@ public class MailerModelService {
 	private ContactRepository contactRepository; 
 	
 	
-	// This method loops through all the contacts and finds if there is a birthday today
+
 	@Scheduled(cron = "0 00 10 * * *")  //run @10am everyday......second, minute, hour, day, month, weekday
 	public void checkforBirthday() {
 		List<Contact> filter_Contacts = contactRepository.findAll()
@@ -45,20 +45,19 @@ public class MailerModelService {
 				&& c.getBirthday().getMonth().getValue() == LocalDate.now().getMonth().getValue())
 				.collect(Collectors.toList());
 		
-		if(filter_Contacts.size() > 0) // if there is indeed such contact
+		/* if there is a birthday today **/
+		if(filter_Contacts.size() > 0) 
 		{
 			filter_Contacts.stream()
-			.forEach(e ->{
+			.forEach(e -> {
 				
 				MailerModel mailerModel = new MailerModel();
 				
 				mailerModel.setEmailFrom("eddiebrrrt@gmail.com"); //mail from me
-				mailerModel.setEmailTo(e.getEmail()); // mail to e			
-				
-				mailerModel.setSubject("Happy Birthday :)"); // subject
-				
+				mailerModel.setEmailTo(e.getEmail()); // mail to e						
+				mailerModel.setSubject("Happy Birthday :)"); 				
                 mailerModel.setMessage("\uD83E\uDD73\uD83E\uDD73\uD83E\uDD73\uD83E\uDD73\uD83E\uDD73 Happy" + (LocalDate.now().getYear() - e.getBirthday().getYear())+" Birthday "+ e.getFirstname()
-                +"  \uD83C\uDF89\uD83C\uDF89\uD83C\uDF89\uD83C\uDF89 ," +" Have a wonderful day on this special day ;)"); //message
+                +"  \uD83C\uDF89\uD83C\uDF89\uD83C\uDF89\uD83C\uDF89 ," +" Have a wonderful day on this special day ;)"); 
 
 				sendEmail(mailerModel);
 				

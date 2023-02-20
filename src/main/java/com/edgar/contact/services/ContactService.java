@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.edgar.contact.exceptions.ContactAlreadyExistException;
 import com.edgar.contact.exceptions.ContactDoesNotExistException;
 import com.edgar.contact.models.Contact;
+import com.edgar.contact.models.user.User;
 import com.edgar.contact.repositories.ContactRepository;
 
 @Service
@@ -28,9 +29,10 @@ public class ContactService {
 	
 	
 	/* create **/
-	public Contact addNew (Contact contact) {
+	public Contact addNew (Contact contact, User user) {
 		
 		if(!isExists(contact.getEmail())) {
+			contact.setContact_user(user);
 			return repo.save(contact);
 		}
 		
@@ -67,9 +69,11 @@ public class ContactService {
 			return repo.save(contact);
 			
 		}
+		
+		else {
 		throw new ContactDoesNotExistException("contact not found with id : "+id);
 		
-		
+		}
 		
 	}
 	
