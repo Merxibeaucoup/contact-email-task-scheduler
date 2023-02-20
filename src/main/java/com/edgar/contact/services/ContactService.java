@@ -32,7 +32,7 @@ public class ContactService {
 	public Contact addNew (Contact contact, User user) {
 		
 		if(!isExists(contact.getEmail())) {
-			contact.setContact_user(user);
+			contact.setUser(user);
 			return repo.save(contact);
 		}
 		
@@ -40,6 +40,14 @@ public class ContactService {
 			
 		 
 	}
+	
+	
+	/* get contacts of current user only  **/
+	public List<Contact> getAllAssignedToUser(User user){
+		return repo.findByUser(user);
+		
+	}
+	
 	
 	/*get all **/
 	public List<Contact> getAll(){

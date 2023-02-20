@@ -1,12 +1,12 @@
 package com.edgar.contact.controllers;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -34,6 +34,8 @@ public class ContactController {
 	@Autowired
 	private ContactService contactService;
 	
+	
+	/*not needed anymore ... used @authentication principal */
 	@Autowired
 	private AuthenticationService auServ;
 	
@@ -54,35 +56,43 @@ public class ContactController {
 	
 	
 	
-	//create 
+	/*create endpoint  **/
 	@PostMapping("/new")
-	public ResponseEntity<Contact> create( Authentication authentication,@Valid @RequestBody Contact contact) {
-		User loggedInUser = auServ.getUserByEmail(authentication.getName());
-		Contact newContact = contactService.addNew(contact,loggedInUser);
+	public ResponseEntity<Contact> create( @Valid @RequestBody Contact contact, @AuthenticationPrincipal User user) {
+//		User loggedInUser = auServ.getUserByEmail(user.getEmail());
+		Contact newContact = contactService.addNew(contact,user);
 		return ResponseEntity.ok(newContact);
 	}
 	
-	//get all
+	
+	/*contacts belonging to logged in user endpoint  **/
+	@GetMapping("/all/user")
+	public ResponseEntity<List<Contact>> getUserContacts(@AuthenticationPrincipal User user){			
+		return ResponseEntity.ok(contactService.getAllAssignedToUser(user));
+	}
+	
+	
+	/*get all contacts in the system  endpoint  .....might get rid of this   **/
 	@GetMapping("/all")
 	public ResponseEntity<List<Contact>> getAllContacts(@AuthenticationPrincipal User user ){
 		user.setId(user.getId());		
 		return ResponseEntity.ok(contactService.getAll());
 	}
 	
-	// get one by id 
+	/* get one by id endpoint  **/
 	@GetMapping("/{id}")
 	public ResponseEntity<Contact> getOneContactById(@PathVariable long id ){
 		return ResponseEntity.ok(contactService.getOneById(id));
 	}
 	
-	
+	/*get one by email endpoint  **/
 	@GetMapping("/email")
 	public ResponseEntity<Contact>  getOneContactByEmail(@RequestParam String email) {
 		return  ResponseEntity.ok(contactService.getContactByEmail(email));
 	}
 	
 	
-	//update one by id 
+	/*update one by id endpoint  **/
 	@PutMapping("/{id}")
 	public ResponseEntity<Contact> updateOneContact( @PathVariable long id, @RequestBody Contact contact){
 		return ResponseEntity.ok(contactService.updateOneById(id, contact));
@@ -92,7 +102,7 @@ public class ContactController {
 
 	
 	
-	//delete one by id 
+	/*delete one by id  endpoint  **/
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> deleteOneContact(@PathVariable long id) {
 		return contactRepository.findById(id)

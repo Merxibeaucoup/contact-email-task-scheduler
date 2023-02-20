@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.edgar.contact.models.Contact;
+import com.edgar.contact.models.user.User;
 
 @Repository
 public interface ContactRepository extends JpaRepository<Contact, Long> {
@@ -15,7 +16,7 @@ public interface ContactRepository extends JpaRepository<Contact, Long> {
 	
 	Boolean existsByEmail(String email);
 
-	List<Contact> findAllById(Long id);
+	List<Contact> findByUser(User user);
 	
 	
 	

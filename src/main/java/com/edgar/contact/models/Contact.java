@@ -62,7 +62,7 @@ public class Contact {
 	
 	
 	/*  created contact belongs to a user **/
-	@ManyToOne private User contact_user;
+	@ManyToOne private User user;
 	
 	
 	public Contact () {
@@ -72,7 +72,7 @@ public class Contact {
 
 	public Contact(Long id, Date date, String avatarFileName, String firstname, String lastname,
 			@Pattern(regexp = "^[0-9]{10}$", message = "Invalid phone format,number should be a 10 digit number") String number,
-			String email, LocalDate birthday, User contact_user) {
+			String email, LocalDate birthday, User user) {
 		super();
 		this.id = id;
 		this.date = date;
@@ -82,7 +82,7 @@ public class Contact {
 		this.number = number;
 		this.email = email;
 		this.birthday = birthday;
-		this.contact_user = contact_user;
+		this.user = user;
 	}
 
 
@@ -166,13 +166,13 @@ public class Contact {
 	}
 
 
-	public User getContact_user() {
-		return contact_user;
+	public User getUser() {
+		return user;
 	}
 
 
-	public void setContact_user(User contact_user) {
-		this.contact_user = contact_user;
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 
@@ -180,7 +180,7 @@ public class Contact {
 	public String toString() {
 		return "Contact [id=" + id + ", date=" + date + ", avatarFileName=" + avatarFileName + ", firstname="
 				+ firstname + ", lastname=" + lastname + ", number=" + number + ", email=" + email + ", birthday="
-				+ birthday + ", contact_user=" + contact_user + "]";
+				+ birthday + ", user=" + user + "]";
 	}
 	
 	
