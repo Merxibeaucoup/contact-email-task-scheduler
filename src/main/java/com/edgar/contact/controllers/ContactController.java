@@ -1,7 +1,6 @@
 package com.edgar.contact.controllers;
 
 import java.util.List;
-import java.util.Set;
 
 import javax.validation.Valid;
 
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.edgar.contact.auth.AuthenticationService;
 import com.edgar.contact.models.Contact;
 import com.edgar.contact.models.user.User;
 import com.edgar.contact.repositories.ContactRepository;
@@ -35,9 +33,10 @@ public class ContactController {
 	private ContactService contactService;
 	
 	
-	/*not needed anymore ... used @authentication principal */
+	/*not needed anymore ... used @authentication principal 
 	@Autowired
 	private AuthenticationService auServ;
+	*/
 	
 	
 	
@@ -75,26 +74,26 @@ public class ContactController {
 	/*get all contacts in the system  endpoint  .....might get rid of this   **/
 	@GetMapping("/all")
 	public ResponseEntity<List<Contact>> getAllContacts(@AuthenticationPrincipal User user ){
-		user.setId(user.getId());		
+			
 		return ResponseEntity.ok(contactService.getAll());
 	}
 	
 	/* get one by id endpoint  **/
 	@GetMapping("/{id}")
-	public ResponseEntity<Contact> getOneContactById(@PathVariable long id ){
+	public ResponseEntity<Contact> getOneContactById(@PathVariable long id, @AuthenticationPrincipal User user ){
 		return ResponseEntity.ok(contactService.getOneById(id));
 	}
 	
 	/*get one by email endpoint  **/
 	@GetMapping("/email")
-	public ResponseEntity<Contact>  getOneContactByEmail(@RequestParam String email) {
+	public ResponseEntity<Contact>  getOneContactByEmail(@RequestParam String email, @AuthenticationPrincipal User user) {
 		return  ResponseEntity.ok(contactService.getContactByEmail(email));
 	}
 	
 	
 	/*update one by id endpoint  **/
 	@PutMapping("/{id}")
-	public ResponseEntity<Contact> updateOneContact( @PathVariable long id, @RequestBody Contact contact){
+	public ResponseEntity<Contact> updateOneContact( @PathVariable long id, @RequestBody Contact contact, @AuthenticationPrincipal User user){
 		return ResponseEntity.ok(contactService.updateOneById(id, contact));
 		
 	}
@@ -104,7 +103,7 @@ public class ContactController {
 	
 	/*delete one by id  endpoint  **/
 	@DeleteMapping("/{id}")
-	public ResponseEntity<?> deleteOneContact(@PathVariable long id) {
+	public ResponseEntity<?> deleteOneContact(@PathVariable long id, @AuthenticationPrincipal User user) {
 		return contactRepository.findById(id)
 		           .map(record -> {
 		               contactRepository.deleteById(id);

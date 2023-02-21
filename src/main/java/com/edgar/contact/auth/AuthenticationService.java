@@ -27,7 +27,8 @@ public class AuthenticationService {
 	
 	@Autowired
 	private AuthenticationManager authenticationManager;
-
+	
+	
 	public AuthenticationResponse register(RegisterRequest request) {
 		
 		var user = User.builder()
