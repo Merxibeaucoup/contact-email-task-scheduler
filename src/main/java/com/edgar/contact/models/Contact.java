@@ -18,6 +18,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import com.edgar.contact.models.user.User;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 public class Contact {
@@ -62,7 +63,9 @@ public class Contact {
 	
 	
 	/*  created contact belongs to a user **/
-	@ManyToOne private User user;
+	@ManyToOne 
+	@JsonIgnore
+	private User user;
 	
 	
 	public Contact () {

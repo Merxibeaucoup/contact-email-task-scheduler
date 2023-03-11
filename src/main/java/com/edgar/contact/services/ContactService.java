@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.edgar.contact.exceptions.ContactAlreadyExistException;
 import com.edgar.contact.exceptions.ContactDoesNotExistException;
 import com.edgar.contact.models.Contact;
 import com.edgar.contact.models.user.User;
@@ -20,6 +19,7 @@ public class ContactService {
 	
 	
 	
+	
 	/* find by email **/
 	public Contact getContactByEmail(String email) {
 		return repo.findByEmail(email).orElseThrow(()-> new ContactDoesNotExistException("Contact not found with email :" + email));
@@ -30,17 +30,13 @@ public class ContactService {
 	
 	/* create **/
 	public Contact addNew (Contact contact, User user) {
-		
-		if(!isExists(contact.getEmail())) {
+				
 			contact.setUser(user);
 			return repo.save(contact);
-		}
-		
-		else throw new ContactAlreadyExistException("A contact already exists with the given Email: "+ contact.getEmail());
-			
-		 
+					 
 	}
 	
+	//turn below to set
 	
 	/* get contacts of current user only  **/
 	public List<Contact> getAllAssignedToUser(User user){

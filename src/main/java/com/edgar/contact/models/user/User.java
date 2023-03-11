@@ -11,6 +11,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -18,6 +19,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.edgar.contact.models.token.Token;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Builder;
@@ -48,6 +51,10 @@ public class User implements UserDetails {
 
 	@Enumerated(EnumType.STRING)
 	private Role role;
+	
+	@JsonIgnore
+	@OneToMany(mappedBy = "user")
+	private List<Token> tokens;
 
 	public User() {
 
@@ -55,7 +62,7 @@ public class User implements UserDetails {
 	
 	
 
-	public User(Long id, String firstname, String lastname, String email, String password, Role role) {
+	public User(Long id, String firstname, String lastname, String email, String password, Role role,  List<Token> tokens) {
 		super();
 		this.id = id;
 		this.firstname = firstname;
@@ -106,6 +113,15 @@ public class User implements UserDetails {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+	
+	public List<Token> getTokens() {
+		return tokens;
+	}
+
+
+	public void setTokens(List<Token> tokens) {
+		this.tokens = tokens;
 	}
 	
 	
