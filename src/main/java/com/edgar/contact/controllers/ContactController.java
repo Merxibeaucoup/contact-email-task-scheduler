@@ -24,7 +24,6 @@ import com.edgar.contact.repositories.ContactRepository;
 import com.edgar.contact.services.ContactService;
 
 @RestController
-@CrossOrigin(origins = "*")
 @RequestMapping("/api/v1/contact")
 public class ContactController {
 	
@@ -94,7 +93,7 @@ public class ContactController {
 	/*update one by id endpoint  **/
 	@PutMapping("/{id}")
 	public ResponseEntity<Contact> updateOneContact( @PathVariable long id, @RequestBody Contact contact, @AuthenticationPrincipal User user){
-		return ResponseEntity.ok(contactService.updateOneById(id, contact));
+		return ResponseEntity.ok(contactService.updateOneById(id, contact,user));
 		
 	}
 	

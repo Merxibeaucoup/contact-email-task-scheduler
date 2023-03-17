@@ -1,5 +1,6 @@
 package com.edgar.contact.services;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,11 +66,13 @@ public class ContactService {
 	}
 	
 	/*update one by id **/
-	public Contact updateOneById(long id, Contact contact) {
+	public Contact updateOneById(long id, Contact contact, User user) {
 		
 		if(isExists(id)) {
-			repo.findById(id);
-			contact.setId(id);
+			repo.findById(id).get();
+			contact.setId(id);	
+			contact.setUser(user);
+			contact.setDate(new Date());
 			return repo.save(contact);
 			
 		}
