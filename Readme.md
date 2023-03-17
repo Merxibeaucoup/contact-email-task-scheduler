@@ -1,4 +1,4 @@
-# Quartz Scheduler
+# Quartz Email Scheduler/Sender
 
 - A simple crud contact app which filters contacts and sends email to any contact with a birthday.
 
