@@ -9,7 +9,7 @@
 
 ## React Frontend coming soon
 
-[MIT](https://github.com/Merxibeaucoup/CONTACT_EMAIL_QUARTZ_SCHEDULER-FRONTEND)
+[Frontend](https://github.com/Merxibeaucoup/CONTACT_EMAIL_QUARTZ_SCHEDULER-FRONTEND)
 
 - HTML
 - CSS
