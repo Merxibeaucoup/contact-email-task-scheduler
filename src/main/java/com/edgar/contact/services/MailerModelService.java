@@ -45,7 +45,7 @@ public class MailerModelService {
 	
 	
 
-	@Scheduled(cron = "1 * * * * *")  //run @10am everyday......second, minute, hour, day, month, weekday
+	@Scheduled(cron = "0 0 10 * * *")  //run @10am everyday......second, minute, hour, day, month, weekday
 	public void checkforBirthday() {
 		List<Contact> filter_Contacts = contactRepository.findAll()
 				.stream()
@@ -62,13 +62,14 @@ public class MailerModelService {
 				
 				MailerModel mailerModel = new MailerModel();
 				
-				Optional<User> user = userRepository.findById(e.getUser().getId());
 				
+				/**Get user that owns this contact   -> Not needed ...personal project for me **/
+				Optional<User> user = userRepository.findById(e.getUser().getId());				
 				String uSerEmail = user.get().getEmail();
 				
 				System.out.println(uSerEmail);
 				
-				mailerModel.setEmailFrom(uSerEmail); //mail from me
+				mailerModel.setEmailFrom("eddiebrrrt@gmail.com"); //mail from me
 				mailerModel.setEmailTo(e.getEmail()); // mail to e						
 				mailerModel.setSubject("Happy Birthday :)"); 				
                 mailerModel.setMessage("\uD83E\uDD73\uD83E\uDD73\uD83E\uDD73\uD83E\uDD73\uD83E\uDD73 Happy " + (LocalDate.now().getYear() - e.getBirthday().getYear())+" Birthday "+ e.getFirstname()
@@ -106,7 +107,7 @@ public class MailerModelService {
 			log.info("---Mesage Sent---");
 		} catch( MailException e) {
 			mailerModel.setStatus(StatusEmail.ERROR); // else
-			log.info("---Mesage Sent---");
+			log.info("---Mesage unable to send---");
 			
 		}
 				
