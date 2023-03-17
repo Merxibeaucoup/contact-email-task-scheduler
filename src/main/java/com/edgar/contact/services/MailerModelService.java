@@ -3,6 +3,7 @@ package com.edgar.contact.services;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +16,14 @@ import org.springframework.stereotype.Service;
 import com.edgar.contact.enums.StatusEmail;
 import com.edgar.contact.models.Contact;
 import com.edgar.contact.models.MailerModel;
+import com.edgar.contact.models.user.User;
 import com.edgar.contact.repositories.ContactRepository;
 import com.edgar.contact.repositories.MailerModelRepository;
+import com.edgar.contact.repositories.UserRepository;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class MailerModelService {
 	
@@ -34,9 +40,12 @@ public class MailerModelService {
 	@Autowired
 	private ContactRepository contactRepository; 
 	
+	@Autowired
+	private UserRepository userRepository; 
+	
 	
 
-	@Scheduled(cron = "0 00 10 * * *")  //run @10am everyday......second, minute, hour, day, month, weekday
+	@Scheduled(cron = "1 * * * * *")  //run @10am everyday......second, minute, hour, day, month, weekday
 	public void checkforBirthday() {
 		List<Contact> filter_Contacts = contactRepository.findAll()
 				.stream()
@@ -53,10 +62,16 @@ public class MailerModelService {
 				
 				MailerModel mailerModel = new MailerModel();
 				
-				mailerModel.setEmailFrom("eddiebrrrt@gmail.com"); //mail from me
+				Optional<User> user = userRepository.findById(e.getUser().getId());
+				
+				String uSerEmail = user.get().getEmail();
+				
+				System.out.println(uSerEmail);
+				
+				mailerModel.setEmailFrom(uSerEmail); //mail from me
 				mailerModel.setEmailTo(e.getEmail()); // mail to e						
 				mailerModel.setSubject("Happy Birthday :)"); 				
-                mailerModel.setMessage("\uD83E\uDD73\uD83E\uDD73\uD83E\uDD73\uD83E\uDD73\uD83E\uDD73 Happy" + (LocalDate.now().getYear() - e.getBirthday().getYear())+" Birthday "+ e.getFirstname()
+                mailerModel.setMessage("\uD83E\uDD73\uD83E\uDD73\uD83E\uDD73\uD83E\uDD73\uD83E\uDD73 Happy " + (LocalDate.now().getYear() - e.getBirthday().getYear())+" Birthday "+ e.getFirstname()
                 +"  \uD83C\uDF89\uD83C\uDF89\uD83C\uDF89\uD83C\uDF89 ," +" Have a wonderful day on this special day ;)"); 
 
 				sendEmail(mailerModel);
@@ -64,6 +79,8 @@ public class MailerModelService {
 				
 			});
 		}
+		
+		log.info("----------------mailer running--------------");
 		
 	}
 	
@@ -85,8 +102,11 @@ public class MailerModelService {
 			mailSender.send(message); 
 			
 			mailerModel.setStatus(StatusEmail.SENT); // if successful
+			
+			log.info("---Mesage Sent---");
 		} catch( MailException e) {
-			mailerModel.setStatus(StatusEmail.ERROR); // if not successful catch error
+			mailerModel.setStatus(StatusEmail.ERROR); // else
+			log.info("---Mesage Sent---");
 			
 		}
 				
